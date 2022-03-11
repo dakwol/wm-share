@@ -5,10 +5,26 @@ import { FcGoogle } from 'react-icons/fc';
 import shareVideo from '../assets/Blue.mp4';
 import logo from '../assets/logo.png';
 
-const Login = () => {
+import { client } from '../client';
 
+const Login = () => {
+  const navigate = useNavigate();
   const responseGoogle=(response) => {
-    
+    localStorage.setItem('user', JSON.stringify(response.profileObj));
+
+    const { name, googleId, imageUrl } = response.profileObj;
+
+    const doc = {
+      _id: googleId,
+      _type: 'user',
+      userName: name,
+      image: imageUrl,
+    }
+
+    client.createIfNotExists(doc)
+      .then(() => {
+        navigate('/', { replace:true })
+      })
   }
 
   return (
@@ -30,7 +46,7 @@ const Login = () => {
           </div>
           <div className='shadeow-2'>
             <GoogleLogin
-              clientId=''
+              clientId={process.env.REACT_APP_GOOGLE_API_TOKEN}
               render={(renderProps) => (
                 <button type='button' className='bg-mainColor flex justify-center items-center p-3 rounded-lg outline-none' onClick={renderProps.onClick} disabled={renderProps.disabled}>
                   <FcGoogle className='mr-4' /> Авторизация через Google
