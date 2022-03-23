@@ -34,6 +34,9 @@ const Feed = () => {
       <Spinner message={`Мы добавляем ${ideaName} мифы в вашу ленту!`} />
     );
   }
+
+  if(!pins?.length) return <h2>Нет мифов</h2>
+
   return (
     <div>
       {pins && (
